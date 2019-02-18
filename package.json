@@ -1,0 +1,8 @@
+{
+  "name": "wontexts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:coolneo4u/WonTexts.git",
+  "author": "Taehyung Cho",
+  "license": "MIT"
+}
