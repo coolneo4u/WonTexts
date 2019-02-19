@@ -1,9 +1,10 @@
 const express = require('express')
+const path = require('path')
 const bodyParser = require('body-parser')
-const scripture = require('./routes/scripture.route')
-const app = express()
-
+const scriptureRoutes = require('./routes/scripture.route')
 const mongoose = require('mongoose')
+const cors = require('cors')
+
 const DB_URL = 'mongodb+srv://webuser:viQYx7NsQyCbB8w6@wontextscluster0-ef0w8.mongodb.net/test?retryWrites=true'
 
 const mongoDB = process.env.MONODB_URI || DB_URL
@@ -12,20 +13,26 @@ const options = {
   useNewUrlParser: true
 }
 mongoose.connect(mongoDB, options)
-  .then(() => {
-    console.log('Connection to Atlas Cluster is successful')
-  })
-  .catch((err) => console.error('connection error: ', err))
-mongoose.Promise = global.Promise
-
-
-
-const port = 3844
+.then(() => {
+  console.log('Connection to Atlas Cluster is successful')
+})
+.catch((err) => console.error('connection error: ', err))
+// mongoose.Promise = global.Promise
+const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use('/scriptures', scripture)
+app.use(cors())
+app.use('/api/scriptures', scriptureRoutes)
 
+const router = express.Router()
+router.get('/', (req, res, next) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'))
+})
+app.use('/', router)
+app.use(express.static(path.join(__dirname, 'public')))
+
+const port = 3844
 app.listen(port, () => {
-    console.log('Server is runner... : ', port)
+    console.log(`Server is running : http://localhost:${port}`)
 })
