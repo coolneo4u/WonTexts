@@ -5,7 +5,16 @@ const scriptureRoutes = require('./routes/scripture.route')
 const mongoose = require('mongoose')
 const cors = require('cors')
 
-const DB_URL = 'mongodb+srv://webuser:viQYx7NsQyCbB8w6@wontextscluster0-ef0w8.mongodb.net/test?retryWrites=true'
+const app = express()
+
+let mongoDB_user
+let mongoDB_password
+const secrets = require('./secrets.json')
+if (app.get('env') !== 'production') {
+  ({ mongoDB_user, mongoDB_password } = secrets['development'])
+}
+
+const DB_URL = `mongodb+srv://${mongoDB_user}:${mongoDB_password}@wontextscluster0-ef0w8.mongodb.net/test?retryWrites=true`
 
 const mongoDB = process.env.MONODB_URI || DB_URL
 const options = {
@@ -18,7 +27,6 @@ mongoose.connect(mongoDB, options)
 })
 .catch((err) => console.error('connection error: ', err))
 // mongoose.Promise = global.Promise
-const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
