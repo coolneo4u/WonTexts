@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const scriptureRoutes = require('./routes/scripture.route')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const history = require('connect-history-api-fallback')
 
 const app = express()
 
@@ -31,15 +32,25 @@ mongoose.connect(mongoDB, options)
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
+
+app.use(history())
+// Static option should be placed after connect-history-api-fallback
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Routes
 app.use('/api/scriptures', scriptureRoutes)
 
+// TODO: remove later. it's for testing.
+var movieRouter = require('./routes/movie.route')
+app.use('/api/movies', movieRouter)
+//////////////////////////////////////////////////
+
+// Vue route
 const router = express.Router()
 router.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, './public', 'index.html'))
 })
 app.use('/', router)
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(require('connect-history-api-fallback')())
 
 const port = 3844
 app.listen(port, () => {
