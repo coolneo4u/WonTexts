@@ -39,6 +39,7 @@ router.get('/', (req, res, next) => {
 })
 app.use('/', router)
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(require('connect-history-api-fallback')())
 
 const port = 3844
 app.listen(port, () => {
