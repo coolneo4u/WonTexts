@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "serve": "nodemon app.js"
+  },
   "name": "wontexts",
   "version": "1.0.0",
   "main": "index.js",
@@ -9,5 +12,8 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongoose": "^5.4.13"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }
