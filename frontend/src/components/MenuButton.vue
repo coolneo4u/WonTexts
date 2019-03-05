@@ -1,5 +1,5 @@
 <template>
-  <div v-if="items.length > 0" class="text-xs-center">
+  <div v-if="items.length > 0" class="text-xs-center menu-button">
     <v-menu offset-y v-model="togglePopover">
       <v-btn @click="resetButtons()" slot="activator" color="primary" dark>{{buttonTitle}}</v-btn>
       <v-list>
@@ -42,7 +42,6 @@ export default {
     },
     togglePopover: function() {
       const selectedValue = this.$store.state.buttonState[this.level]
-      debugger
       if (selectedValue) return false
       return this.level !== 0
     },

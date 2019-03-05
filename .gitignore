@@ -2,3 +2,5 @@
 secrets.json
 mongoimport.txt
 /public/static/
+public/
+public/index.html
