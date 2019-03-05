@@ -1,7 +1,6 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
-const scriptureRoutes = require('./routes/scripture.route')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const history = require('connect-history-api-fallback')
@@ -38,6 +37,7 @@ app.use(history())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Routes
+const scriptureRoutes = require('./routes/scripture.route')
 app.use('/api/scriptures', scriptureRoutes)
 
 // TODO: remove later. it's for testing.

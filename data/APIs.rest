@@ -1,0 +1,40 @@
+### Get verse
+GET http://localhost:3844/api/scriptures/get
+content-type: application/json
+
+{
+  "doc_name": "jj-0-2-0",
+  "doc_id": "verse-jj-ko"
+}
+### Get indexes
+GET http://localhost:3844/api/scriptures/indexes?doc_id=index-ko
+content-type: application/json
+
+### Update verse
+PUT http://localhost:3844/api/scriptures/update
+content-type: application/json
+
+{
+  "doc_name": "jj-0-1-0",
+  "doc_id": "verse-jj-ko",
+  "value": "물질(物質)이 개벽(開闢)되니 \n\r정신(精神)을 개벽(開闢)하자 \n\r \n\r처처불상(處處佛像) \n\r사사불공(事事佛供) \n\r \n\r무시선(無時禪) \n\r무처선(無處禪) \n\r \n\r동정일여(動靜一如) \n\r영육쌍전(靈肉雙全) \n\r \n\r불법시생활(佛法是生活) \n\r생활시불법(生活是佛法) \n"
+}
+
+### Create verse
+POST http://localhost:3844/api/scriptures/create
+content-type: application/json
+
+{
+  "doc_name": "jj-0-1-0",
+  "doc_id": "verse-jj-ko",
+  "value": "물질(物質)이 개벽(開闢)되니 \n\r정신(精神)을 개벽(開闢)하자 \n\r \n\r처처불상(處處佛像) \n\r사사불공(事事佛供) \n\r \n\r무시선(無時禪) \n\r무처선(無處禪) \n\r \n\r동정일여(動靜一如) \n\r영육쌍전(靈肉雙全) \n\r \n\r불법시생활(佛法是生活) \n\r생활시불법(生活是佛法) \n"
+}
+
+### Delete verse
+DELETE http://localhost:3844/api/scriptures/delete
+content-type: application/json
+
+{
+  "doc_name": "jj-0-1-0",
+  "doc_id": "verse-jj-ko"
+}

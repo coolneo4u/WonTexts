@@ -7,6 +7,9 @@ import LoginPage from '../components/LoginPage'
 import MovieIndexPage from '../components/MovieIndexPage'
 import MovieShowPage from '../components/MovieShowPage'
 
+import ScriptureListPage from '../components/ScriptureListPage'
+import ScriptureDetailPage from '../components/ScriptureDetailPage'
+
 Vue.use(Router)
 
 export default new Router({
@@ -31,6 +34,16 @@ export default new Router({
       path: '/movie/:id',
       name: 'MovieShowPage',
       component: MovieShowPage
+    },
+    {
+      path: '/scriptures',
+      name: 'ScriptureListPage',
+      component: ScriptureListPage
+    },
+    {
+      path: '/scripture/view',
+      name: 'ScriptureDetailPage',
+      component: ScriptureDetailPage
     }
   ]
 })

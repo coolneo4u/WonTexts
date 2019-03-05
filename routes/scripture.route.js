@@ -3,8 +3,9 @@ const router = express.Router()
 const scriptureController = require('../controllers/scripture.controller')
 
 router.post('/create', scriptureController.create)
-router.get('/verse', scriptureController.getVerse)
-router.get('/update', scriptureController.updateVerse)
-router.delete('/delete', scriptureController.deleteVerse)
+router.get('/get', scriptureController.get)
+router.put('/update', scriptureController.update)
+router.delete('/delete', scriptureController.delete)
+router.get('/indexes', scriptureController.indexes)
 
 module.exports = router

@@ -6,11 +6,9 @@ const Scripture = require('../models/scripture.model')
 // }
 
 exports.create = (req, res, next) => {
-  const scripture = new Scripture({
-    doc_id: req.body.doc_id,
-    name: req.body.name,
-    value: req.body.value
-  })
+  const { doc_id, doc_name, value, image } = req.body
+  const scripture = new Scripture({ doc_id, doc_name, value, image })
+  // if (image) scripture.image = image
   scripture.save(function (err) {
     if (err) return next(err)
     console.log('saved')
@@ -18,25 +16,43 @@ exports.create = (req, res, next) => {
   })
 }
 
-exports.getVerse = (req, res, next) => {
-  const { doc_id, name } = req.body
-  Scripture.findOne({ doc_id, name }, (err, verse) => {
+exports.get = (req, res, next) => {
+  const { doc_id, doc_name } = req.body
+  Scripture.findOne({ doc_id, doc_name }, (err, verse) => {
     if (err) return next(err)
     res.send(verse)
   })
 }
 
-exports.updateVerse = (req, res, next) => {
-  const { doc_id, name, value } = req.body
-  Scripture.findOneAndUpdate({ doc_id, name }, { value }, (err, verse) => {
+exports.update = (req, res, next) => {
+  const { doc_id, doc_name, value, image } = req.body
+  Scripture.findOneAndUpdate({ doc_id, doc_name }, { value, image }, (err, verse) => {
     if (err) return next(err)
     res.send('Verse updated!!')
   })
 }
 
-exports.deleteVerse = (req, res, next) => {
+exports.delete = (req, res, next) => {
+  // TODO: check permisstion first
+  return
+  const { doc_id, doc_name } = req.body
+  // if (!(parseInt(doc_version, 10) >= 0)) return
   Scripture.findOneAndRemove(req.body, (err) => {
     if (err) return next(err)
     res.send('Deleted successfully!')
+  })
+}
+
+exports.indexes = (req, res, next) => {
+  if (!req.query.doc_id) {
+    res.send('doc_id is requried')
+    return
+  }
+  Scripture.find(req.query, (err, result) => {
+    if (err) {
+      return next(err)
+    }
+    console.log('result: ', result)
+    res.send(result)
   })
 }
