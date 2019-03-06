@@ -58,9 +58,6 @@ export default {
     return {
       toggled: true,
       indexes: [],
-      books: () => {
-        return this.$store.state.books
-      },
       selectLanguage: language => {
         this.$store.commit('setLocale', language.code)
         this.getIndexes()
@@ -109,9 +106,16 @@ export default {
 </script>
 
 <style>
+#app {
+  display: flex;
+  height: 100%;
+  background: #eeeeee;
+}
 #nav-bar {
   height: 58px;
   display: flex;
+  position: sticky;
+  top: 0;
 }
 .logo-container {
   display: flex;

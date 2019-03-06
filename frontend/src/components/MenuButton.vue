@@ -1,8 +1,13 @@
 <template>
   <div v-if="items.length > 0" class="text-xs-center menu-button">
     <v-menu offset-y v-model="togglePopover">
-      <v-btn @click="resetButtons()" slot="activator" color="primary" dark>{{buttonTitle}}</v-btn>
-      <v-list>
+      <v-btn
+        @click="resetButtons()"
+        slot="activator"
+        color="blue-grey darken-1"
+        dark
+      >{{buttonTitle}}</v-btn>
+      <v-list class="menu-list">
         <v-list-tile v-for="(item, index) in items" :key="index" @click="handleClick(item)">
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile>
@@ -52,7 +57,9 @@ export default {
         return this.$store.state.books
       }
       const key = this.$store.state.buttonState[level - 1] + '-'
+      console.log('key: ', key)
       let indexes = Object.keys(this.$store.state.selectedIndex).filter(k => k.includes(key))
+      console.log('indexes before: ', indexes)
       indexes = indexes.map(i => {
         const comps = i.split('-').slice(0, level + 1)
         if (comps.length <= level) return
@@ -67,6 +74,7 @@ export default {
         item.level = level + 1
         return item
       })
+      if (items.length === 0) this.$store.commit('selectVerse')
       return items
     }
   }
@@ -76,5 +84,8 @@ export default {
 <style>
 .menu-button {
   margin-right: -10px;
+}
+.menu-list {
+  max-height: calc(100vh - 100px);
 }
 </style>

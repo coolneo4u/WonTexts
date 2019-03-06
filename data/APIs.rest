@@ -1,9 +1,13 @@
 ### Get verse
+http://localhost:3844/api/scriptures/get?doc_name=jj-0-1&doc_id=verse-jj-ko
+
+
+### Get verse
 GET http://localhost:3844/api/scriptures/get
 content-type: application/json
 
 {
-  "doc_name": "jj-0-2-0",
+  "doc_name": "jj-0-1",
   "doc_id": "verse-jj-ko"
 }
 ### Get indexes

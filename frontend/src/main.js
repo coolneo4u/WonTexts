@@ -6,6 +6,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import * as SharedFunctions from './sharedFunctions'
 
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
@@ -35,8 +36,8 @@ const messages = {
 
 // Create VueI18n instance with options
 const i18n = new VueI18n({
-  locale: store.state.locale, // set locale
-  messages // set locale messages
+  locale: SharedFunctions.getCookie('locale') || 'ko',
+  messages
 })
 
 /* eslint-disable no-new */
