@@ -28,7 +28,6 @@ export default {
         this.$store.commit('updateButtonState', item)
       },
       resetButtons: () => {
-        this.$store.commit('updateButtonLevel', this.level)
         this.togglePopover = true
       }
     }

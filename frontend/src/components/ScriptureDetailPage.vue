@@ -1,6 +1,6 @@
 <template>
   <div class="verse-view-container">
-    <div ref="verseView" class="verse-view" v-html="currentVerse.value"/>
+    <div ref="verseView" v-bind:style="{ fontSize: fontSize + 'px', lineHeight: lineHeight + 'px' }" class="verse-view" v-html="currentVerse.value"/>
     <div class="right-panel">
       <div class="bookmark-wrapper">
         <svg fill="#E74C3C" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +20,7 @@
     </div>
     <div class="bottom-panel">
       <div class="font-size-container">
-        <v-btn @click="decreaseFontSize" flat small>-</v-btn>
+        <v-btn @click="decreaseFontSize" flat small>&mdash;</v-btn>
         <div class="font-size-icon">
           <svg
             fill="#757575"
@@ -40,11 +40,37 @@
         </div>
         <v-btn @click="increaseFontSize" flat small>+</v-btn>
       </div>
+      <div class="line-space-container">
+        <v-btn @click="decreaseLineHeight" flat small>&mdash;</v-btn>
+        <div class="line-space-icon">
+          <svg
+            fill="#757575"
+            version="1.1"
+            viewBox="0 0 100 100"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g>
+              <path
+                d="m56.488 86.848h-11.625l-2.0312 4.7344c-0.50391 1.1719-0.75391 2.043-0.75391 2.6172 0 0.45703 0.21875 0.85938 0.65234 1.207 0.4375 0.34375 1.375 0.57422 2.8203 0.67188v0.82422h-9.4531v-0.82422c1.2578-0.21875 2.0703-0.50391 2.4375-0.85938 0.75-0.71484 1.5859-2.1523 2.5-4.3242l10.559-24.695h0.76953l10.453 24.969c0.83984 2.0039 1.6055 3.3125 2.293 3.9062 0.6875 0.59766 1.6406 0.92969 2.8633 1.0039v0.82422h-11.844v-0.82422c1.1992-0.058594 2.0078-0.25391 2.4297-0.59766 0.42188-0.33594 0.62891-0.75 0.62891-1.2422 0-0.64453-0.29688-1.6758-0.88672-3.0781zm-0.61719-1.6328l-5.0938-12.133-5.2266 12.133z"
+              ></path>
+              <path
+                d="m56.488 22.828h-11.625l-2.0312 4.7344c-0.5 1.168-0.75 2.043-0.75 2.6133 0 0.46094 0.21484 0.85938 0.64844 1.2031 0.4375 0.35156 1.3789 0.57422 2.8203 0.67969v0.81641h-9.4531v-0.81641c1.2578-0.22656 2.0703-0.51172 2.4375-0.86719 0.75781-0.70703 1.5898-2.1445 2.5-4.3164l10.559-24.699h0.77734l10.453 24.969c0.83594 2.0078 1.6016 3.3086 2.2852 3.9062 0.6875 0.60156 1.6445 0.93359 2.8711 1.0078v0.81641h-11.844v-0.81641c1.1914-0.058594 2-0.25781 2.4219-0.60156 0.42188-0.33594 0.62891-0.75 0.62891-1.2383 0-0.64453-0.29688-1.6758-0.88672-3.0781zm-0.61719-1.6367l-5.0938-12.129-5.2266 12.129z"
+              ></path>
+              <path
+                d="m50.312 39.801v18.719l-1.1719-1.1719-2.2383 2.2461 5.1328 5.1367 5.1406-5.1367-2.2422-2.2461-1.1836 1.1953v-18.758l1.1875 1.1875 2.2383-2.2422-5.1328-5.1367-5.1406 5.1367 2.2383 2.2422z"
+              ></path>
+            </g>
+          </svg>
+        </div>
+        <v-btn @click="increaseLineHeight" flat small>+</v-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as SharedFunctions from '../sharedFunctions'
+
 export default {
   computed: {
     currentVerse: function() {
@@ -53,16 +79,37 @@ export default {
   },
   data() {
     return {
-      fontSize: 18,
+      fontSize: parseInt(SharedFunctions.getCookie('fontSize'), 10) || 18,
+      lineHeight: parseInt(SharedFunctions.getCookie('lineHeight'), 10) || 30,
+      saveFontSize: () => {
+        SharedFunctions.setCookie('fontSize', this.$data.fontSize, -1)
+      },
+      saveLineHeight: () => {
+        SharedFunctions.setCookie('lineHeight', this.$data.lineHeight, -1)
+      },
       decreaseFontSize: () => {
         this.$data.fontSize -= 1
         const sizeString = `${this.$data.fontSize}px`
         this.$refs.verseView.style.fontSize = sizeString
+        this.$data.saveFontSize()
       },
       increaseFontSize: () => {
         this.$data.fontSize += 1
         const sizeString = `${this.$data.fontSize}px`
         this.$refs.verseView.style.fontSize = sizeString
+        this.$data.saveFontSize()
+      },
+      decreaseLineHeight: () => {
+        this.$data.lineHeight -= 1
+        const sizeString = `${this.$data.lineHeight}px`
+        this.$refs.verseView.style.lineHeight = sizeString
+        this.$data.saveLineHeight()
+      },
+      increaseLineHeight: () => {
+        this.$data.lineHeight += 1
+        const sizeString = `${this.$data.lineHeight}px`
+        this.$refs.verseView.style.lineHeight = sizeString
+        this.$data.saveLineHeight()
       }
     }
   }
@@ -83,7 +130,6 @@ export default {
   padding-left: 20px;
   padding-right: 20px;
   flex: 1 0;
-  font-size: 18px;
 }
 .right-panel {
   width: 40px;
@@ -126,15 +172,21 @@ export default {
 .bottom-panel {
   position: absolute;
   bottom: 0;
+  display: flex;
 }
+.line-space-container,
 .font-size-container {
   display: flex;
   align-items: center;
+  margin-left: 20px;
+  margin-right: 20px;
 }
+.line-space-container button,
 .font-size-container button {
   max-width: 40px;
   min-width: 0;
 }
+.line-space-icon,
 .font-size-icon {
   width: 25px;
   height: 25px;
