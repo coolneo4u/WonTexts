@@ -11,7 +11,7 @@ let mongoDB_user
 let mongoDB_password
 const secrets = require('./secrets.json')
 if (app.get('env') !== 'production') {
-  ({ mongoDB_user, mongoDB_password } = secrets['development'])
+  ;({ mongoDB_user, mongoDB_password } = secrets['development'])
 }
 
 const DB_URL = `mongodb+srv://${mongoDB_user}:${mongoDB_password}@wontextscluster0-ef0w8.mongodb.net/test?retryWrites=true`
@@ -21,11 +21,12 @@ const options = {
   dbName: 'WonTextsDB',
   useNewUrlParser: true
 }
-mongoose.connect(mongoDB, options)
-.then(() => {
-  console.log('Connection to Atlas Cluster is successful')
-})
-.catch((err) => console.error('connection error: ', err))
+mongoose
+  .connect(mongoDB, options)
+  .then(() => {
+    console.log('Connection to Atlas Cluster is successful')
+  })
+  .catch(err => console.error('connection error: ', err))
 // mongoose.Promise = global.Promise
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -39,11 +40,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Routes
 const scriptureRoutes = require('./routes/scripture.route')
 app.use('/api/scriptures', scriptureRoutes)
-
-// TODO: remove later. it's for testing.
-var movieRouter = require('./routes/movie.route')
-app.use('/api/movies', movieRouter)
-//////////////////////////////////////////////////
+const userRoutes = require('./routes/user.route')
+app.use('/api/users', userRoutes)
 
 // Vue route
 const router = express.Router()
@@ -54,5 +52,5 @@ app.use('/', router)
 
 const port = 3844
 app.listen(port, () => {
-    console.log(`Server is running : http://localhost:${port}`)
+  console.log(`Server is running : http://localhost:${port}`)
 })

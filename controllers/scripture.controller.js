@@ -1,4 +1,5 @@
 const Scripture = require('../models/scripture.model')
+require('../passport')
 
 // TODO: check that next is working properly
 // const next = (err) => {

@@ -1,3 +1,25 @@
+### Create User
+POST http://localhost:3844/api/users
+content-type: application/json
+
+{
+  "user": {
+    "email": "neo@matrix.com",
+    "password": "test"
+  }
+}
+
+### Get Current User
+GET http://localhost:3844/api/users/current
+content-type: application/json
+Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lb0BtYXRyaXguY29tIiwiaWQiOiI1YzgwOThmNDdlNjkxYTU1YjM2MjYzNWYiLCJleHAiOjE1NTQ1MjAwMzcsImlhdCI6MTU1MTkzMTYzN30.VI1-RMKJZrrGLiGMmL8kQzEmbUpOL0dHdSHuL4or0XQ
+
+{
+  "user": {
+    "email": "neo@matrix.com"
+  }
+}
+
 ### Get verse
 http://localhost:3844/api/scriptures/get?doc_name=jj-0-1&doc_id=verse-jj-ko
 

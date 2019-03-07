@@ -8,13 +8,11 @@ const Schema = mongoose.Schema
 // doc_name: jj-3-2, jj-1-2-3, tcho, ...
 // dov_version: -1 (original), 0 (current), 1,2,3 ...
 const ScriptureSchema = new Schema({
-    doc_id: { type: String, required: true },
-    doc_name: { type: String, required: true },
-    // doc_version: { type: Number, required: false },  
-    value: { type: String, required: true },
-    image: { type: String, required: false }
+  doc_id: { type: String, required: true },
+  doc_name: { type: String, required: true },
+  // doc_version: { type: Number, required: false },
+  value: { type: String, required: true },
+  image: { type: String, required: false }
 })
 
 module.exports = mongoose.model('Scripture', ScriptureSchema)
-
-
