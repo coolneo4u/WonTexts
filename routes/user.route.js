@@ -4,7 +4,7 @@ const auth = require('../auth')
 const { create, login, current } = require('../controllers/user.controller')
 
 //POST new user route (optional, everyone has access)
-router.post('/', auth.optional, create)
+router.post('/register', auth.optional, create)
 
 //POST login route (optional, everyone has access)
 router.post('/login', auth.optional, login)

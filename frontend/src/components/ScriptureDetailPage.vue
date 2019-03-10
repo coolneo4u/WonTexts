@@ -1,6 +1,10 @@
 <template>
-  <div class="verse-view-container">
-    <div ref="verseView" v-bind:style="{ fontSize: fontSize + 'px', lineHeight: lineHeight + 'px' }" class="verse-view" v-html="currentVerse.value"/>
+  <div class="verse-view-wrapper">
+    <div class="selectors-container">
+      <template v-for="(button, index) in buttons">
+        <component v-bind:is="button" :key="index" :level="index"/>
+      </template>
+    </div>
     <div class="right-panel">
       <div class="bookmark-wrapper">
         <svg fill="#E74C3C" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -65,22 +69,53 @@
         <v-btn @click="increaseLineHeight" flat small>+</v-btn>
       </div>
     </div>
+    <div class="verse-view-container">
+      <div
+        ref="verseView"
+        v-bind:style="{ fontSize: fontSize + 'px', lineHeight: lineHeight + 'em' }"
+        class="verse-view"
+        v-html="currentVerse.value"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import MenuButton from './MenuButton'
 import * as SharedFunctions from '../sharedFunctions'
 
 export default {
+  components: {
+    MenuButton
+  },
+  mounted() {
+    window.addEventListener('keydown', e => {
+      console.log('e: ', e)
+      if (e.keyCode === 39) {
+        this.$store.commit('selectVerse', 'next')
+      }
+      if (e.keyCode === 37) {
+        this.$store.commit('selectVerse', 'previous')
+      }
+    })
+  },
   computed: {
     currentVerse: function() {
       return this.$store.state.currentVerse
+    },
+    buttons: function() {
+      const currentLevel = this.$store.state.buttonState.level
+      const buttons = []
+      for (let i = 0; i <= currentLevel; i += 1) {
+        buttons.push('MenuButton')
+      }
+      return buttons
     }
   },
   data() {
     return {
       fontSize: parseInt(SharedFunctions.getCookie('fontSize'), 10) || 18,
-      lineHeight: parseInt(SharedFunctions.getCookie('lineHeight'), 10) || 30,
+      lineHeight: parseFloat(SharedFunctions.getCookie('lineHeight')) || 1.6,
       saveFontSize: () => {
         SharedFunctions.setCookie('fontSize', this.$data.fontSize, -1)
       },
@@ -89,26 +124,18 @@ export default {
       },
       decreaseFontSize: () => {
         this.$data.fontSize -= 1
-        const sizeString = `${this.$data.fontSize}px`
-        this.$refs.verseView.style.fontSize = sizeString
         this.$data.saveFontSize()
       },
       increaseFontSize: () => {
         this.$data.fontSize += 1
-        const sizeString = `${this.$data.fontSize}px`
-        this.$refs.verseView.style.fontSize = sizeString
         this.$data.saveFontSize()
       },
       decreaseLineHeight: () => {
-        this.$data.lineHeight -= 1
-        const sizeString = `${this.$data.lineHeight}px`
-        this.$refs.verseView.style.lineHeight = sizeString
+        this.$data.lineHeight -= 0.1
         this.$data.saveLineHeight()
       },
       increaseLineHeight: () => {
-        this.$data.lineHeight += 1
-        const sizeString = `${this.$data.lineHeight}px`
-        this.$refs.verseView.style.lineHeight = sizeString
+        this.$data.lineHeight += 0.1
         this.$data.saveLineHeight()
       }
     }
@@ -117,18 +144,45 @@ export default {
 </script>
 
 <style>
+.verse-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0;
+  position: relative;
+  height: calc(100vh - 58px);
+}
+.selectors-container {
+  display: flex;
+  margin-left: 20px;
+  align-items: center;
+  flex: 1 0;
+  max-height: 60px;
+  position: absolute;
+  padding: 5px;
+  z-index: 5;
+  background: #eeeeee;
+}
 .verse-view-container {
   margin: 20px;
+  margin-top: 0;
   display: flex;
   flex: 1 0;
   background: #fafafa;
-  padding: 20px;
-  position: relative;
+  padding: 0px;
+  position: absolute;
+  top: 60px;
+  overflow-y: auto;
+  height: calc(100vh - 160px);
+  width: calc(100vw - 40px);
+  border: 30px solid #fafafa;
+  border-right: 0;
+  padding-right: 30px;
 }
 .verse-view {
   padding-top: 0;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 50px;
+  padding-bottom: 30px;
   flex: 1 0;
 }
 .right-panel {
@@ -136,6 +190,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  position: absolute;
+  right: 40px;
+  top: 100px;
+  z-index: 8;
 }
 .verse-view-container .d3 {
   margin-bottom: 10px;
@@ -171,8 +229,11 @@ export default {
 }
 .bottom-panel {
   position: absolute;
+  width: 100%;
+  left: 0;
   bottom: 0;
   display: flex;
+  background: #eee;
 }
 .line-space-container,
 .font-size-container {

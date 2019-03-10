@@ -4,14 +4,16 @@ require('../passport')
 const passport = require('passport')
 
 exports.create = (req, res, next) => {
-  const {
-    body: { user }
-  } = req
-  if (!user.email) return res.status(422).json({ errors: { email: 'is required' } })
-  if (!user.password) return res.status(422).json({ errors: { password: 'is required' } })
-  const finalUser = new User(user)
-  finalUser.setPassword(user.password)
-  return finalUser.save().then(() => res.json({ user: finalUser.toAuthJSON() }))
+  const { email, password, firstName, lastName } = req.body
+  if (!email) return res.status(422).json({ errors: { email: 'is required' } })
+  if (!password) return res.status(422).json({ errors: { password: 'is required' } })
+  if (!firstName) return res.status(422).json({ errors: { firstName: 'is required' } })
+  if (!lastName) return res.status(422).json({ errors: { lastName: 'is required' } })
+  const finalUser = new User({ email, password, firstName, lastName })
+  finalUser.setPassword(password)
+  finalUser.save().then(() => {
+    return res.json({ user: finalUser.toAuthJSON() })
+  })
 }
 
 exports.login = (req, res, next) => {

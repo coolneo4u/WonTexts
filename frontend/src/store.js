@@ -3,6 +3,10 @@ import Vuex from 'vuex'
 import * as SharedFunctions from './sharedFunctions'
 import { app } from './main'
 
+import { alert } from './store/alert.module'
+import { account } from './store/account.module'
+import { users } from './store/user.module'
+
 Vue.use(Vuex)
 
 const initButtonState = () => ({
@@ -10,9 +14,12 @@ const initButtonState = () => ({
   0: ''
 })
 export default new Vuex.Store({
+  modules: {
+    alert,
+    account,
+    users
+  },
   state: {
-    user: {},
-    token: '',
     indexes: [],
     selectedIndex: {},
     books: [],
@@ -39,17 +46,46 @@ export default new Vuex.Store({
       state.buttonState.level = level + 1
       Vue.set(state.buttonState, level, payload.code)
       Vue.set(state.buttonState, level + 1, undefined)
-      // TODO: comment below
-      window.theState = state
     },
-    selectVerse(state) {
+    selectVerse(state, payload) {
       const { buttonState } = state
-      const key = buttonState[buttonState.level - 1]
       const book = buttonState[0]
+      let theKey = buttonState[buttonState.level - 1]
+      const oldKey = theKey
+      if (['next', 'previous'].includes(payload)) {
+        if (!state.currentVerse.doc_name) return
+        const theIndex = state.selectedIndex
+        let indexInt = 0
+        for (let [i, key] of Object.keys(theIndex).entries()) {
+          if (key === state.currentVerse.doc_name) indexInt = i
+        }
+        let isRoot = true
+        while (isRoot) {
+          let newIndexInt
+          if (payload === 'next') {
+            newIndexInt = Math.min(indexInt + 1, Object.keys(theIndex).length - 1)
+          } else {
+            newIndexInt = Math.max(indexInt - 1, 0)
+          }
+          if (indexInt === newIndexInt) return
+          else indexInt = newIndexInt
+          const newKey = Object.keys(theIndex)[indexInt]
+          isRoot = theKey.split('-').length !== newKey.split('-').length
+          console.log('theKey: ', theKey)
+          console.log('newKey: ', newKey)
+          if (!isRoot) theKey = newKey
+        }
+        for (let [i, v] of oldKey.split('-').entries()) {
+          if (i === 0 || i === oldKey.split('-').length - 1) continue
+          const comps = theKey.split('-')
+          if (comps[i] !== v) state.buttonState[i] = comps.slice(0, i + 1).join('-')
+        }
+        state.buttonState[buttonState.level - 1] = theKey
+      }
       Vue.prototype.$http
         .get('http://localhost:3844/api/scriptures/get', {
           params: {
-            doc_name: key,
+            doc_name: theKey,
             doc_id: `verse-${book}-${app.$i18n.locale}`
           }
         })

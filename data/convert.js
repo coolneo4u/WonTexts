@@ -82,6 +82,7 @@ const convertedScriptures = scriptures.map(s => {
     the_index[titleIndex] = s.ZTITLE
     s.doc_name = titleIndex
   } else {
+    s.doc_name = [book, section].join('-')
     // if (s.ZID.split('-').length > 2) logs.push('check ZID: ', s.ZID)
   }
   if (s.ZTITLE2) {

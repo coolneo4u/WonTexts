@@ -6,6 +6,8 @@ const { Schema } = mongoose
 
 const UserSchema = new Schema({
   email: String,
+  firstName: String,
+  lastName: String,
   hash: String,
   salt: String
 })

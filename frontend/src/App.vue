@@ -1,62 +1,85 @@
 <template>
   <v-app>
-    <div id="nav-bar" class="grey darken-4 elevation-4">
-      <div class="logo-container">
-        <img src="./assets/ilwonsang.png" class="logo">
-      </div>
-      <div class="title-container">{{ $t('message.title') }}</div>
-      <div class="selectors-container">
-        <template v-for="(button, index) in buttons">
-          <component v-bind:is="button" :key="index" :level="index"/>
-        </template>
-      </div>
-      <div class="right-buttons-container">
-        <div class="text-xs-center">
-          <v-menu ref="languageMenu" offset-y>
-            <v-btn slot="activator" flat small color="grey lighten-5">Language</v-btn>
-            <v-list>
-              <v-list-tile
-                v-for="language in [{ title: '한글', code: 'ko' }, { title: 'English', code: 'en' }]"
-                :key="language.code"
-                @click="selectLanguage(language)"
-              >
-                <v-list-tile-title>{{ language.title }}</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+    <div class="app-container">
+      <div id="nav-bar" class="grey darken-4 elevation-4">
+        <div class="logo-container">
+          <img src="./assets/ilwonsang.png" class="logo">
+        </div>
+        <div class="title-container">{{ $t('message.title') }}</div>
+        <div class="right-buttons-container">
+          <LoginView v-show="!account.status.loggedIn"/>
+          <v-btn
+            flat
+            small
+            color="grey lighten-5"
+            @click.prevent="checkLogout"
+            v-show="account.status.loggedIn"
+          >{{ $t('login.logout')}}</v-btn>
+          <div class="text-xs-center">
+            <v-menu ref="languageMenu" offset-y>
+              <v-btn slot="activator" flat small color="grey lighten-5">Language</v-btn>
+              <v-list>
+                <v-list-tile
+                  v-for="language in [{ title: '한글', code: 'ko' }, { title: 'English', code: 'en' }]"
+                  :key="language.code"
+                  @click="selectLanguage(language)"
+                >
+                  <v-list-tile-title>{{ language.title }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="app">
-      <router-view/>
+      <div id="app">
+        <div
+          v-if="alert.message"
+          class="alert"
+          :class="{ show: !!alert.message }"
+          :style="{ background: alert.type }"
+        >{{$t(`alert.${alert.message}`)}}</div>
+        <router-view/>
+      </div>
     </div>
   </v-app>
 </template>
 
 <script>
-import MenuButton from './components/MenuButton'
+import LoginView from './components/LoginView'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  components: {
-    MenuButton
-  },
+  components: { LoginView },
   created() {
     this.getIndexes()
+    // TODO: comment below
+    window.theStore = this.$store
   },
   computed: {
-    buttons: function() {
-      const currentLevel = this.$store.state.buttonState.level
-      const buttons = []
-      for (let i = 0; i <= currentLevel; i += 1) {
-        buttons.push('MenuButton')
+    ...mapState({
+      account: state => state.account,
+      alert: state => state.alert
+    })
+  },
+  methods: {
+    ...mapActions({
+      clearAlert: 'alert/clear',
+      logout: 'account/logout',
+      checkLogout: function() {
+        const check = window.confirm('Are you sure?')
+        if (check) this.logout()
       }
-      return buttons
+    })
+  },
+  watch: {
+    $route(to, from) {
+      // clear alert on location change
+      this.clearAlert()
     }
   },
   data() {
     return {
-      toggled: true,
       indexes: [],
       selectLanguage: language => {
         this.$store.commit('setLocale', language.code)
@@ -106,16 +129,44 @@ export default {
 </script>
 
 <style>
+body {
+  background: #eee;
+}
+@keyframes notification {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.alert {
+  color: white;
+  position: absolute;
+  z-index: 11;
+  right: 0;
+  padding: 10px;
+}
+.alert.show {
+  animation-name: notification;
+  animation-duration: 0.3s;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+}
+.app-container {
+  /* height: 150vh; */
+}
 #app {
   display: flex;
-  height: 100%;
+  flex-direction: column;
   background: #eeeeee;
 }
 #nav-bar {
-  height: 58px;
+  height: 50px;
   display: flex;
   position: sticky;
   top: 0;
+  z-index: 10;
 }
 .logo-container {
   display: flex;
@@ -129,19 +180,14 @@ export default {
   align-items: center;
   font-size: 1.5em;
   font-weight: 300;
-}
-.selectors-container {
-  display: flex;
-  margin-left: 15px;
-  align-items: center;
-  flex: 1 0;
+  flex: 1;
 }
 .right-buttons-container {
   display: flex;
   align-items: center;
 }
 img.logo {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 }
 </style>

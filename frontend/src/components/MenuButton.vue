@@ -82,9 +82,11 @@ export default {
 
 <style>
 .menu-button {
-  margin-right: -10px;
+  margin-left: -8px;
+  margin-right: -2px;
 }
 .menu-list {
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 200px);
+  z-index: 11;
 }
 </style>
